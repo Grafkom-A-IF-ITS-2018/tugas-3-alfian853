@@ -1,0 +1,211 @@
+<html>
+  <head>
+    <title>Tugas 3</title>
+    <meta http-equiv="content-type" content="text/html" charset="ISO-8859-1">
+
+    <script type="text/javascript" src="gl-matrix-min.js"></script>
+    <script type="text/javascript" src="ObjectFactory.js"></script>
+    <script type="text/javascript" src="Scene.js"></script>
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+      precision mediump float;
+      varying vec4 vColor;
+      void main(void) {
+        gl_FragColor = vColor;
+      }
+    </script>
+
+    <script id="shader-vs" type="x-shader/x-vertex">
+      attribute vec3 aVertexPosition;
+      attribute vec4 aVertexColor;
+      uniform mat4 uMVMatrix;
+      uniform mat4 uPMatrix;
+      varying vec4 vColor;
+      void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vColor = aVertexColor;
+      }
+
+    </script>
+    <script type="text/javascript">
+      /** @type {WebGLRenderingContext} */
+      var gl
+      function initGL(canvas) {
+        try {
+          gl = canvas.getContext('webgl')
+          gl.viewportWidth = canvas.width
+          gl.viewportHeight = canvas.height
+        } catch (e) {}
+        if (!gl) {
+          alert('Tidak bisa menginisialisasi WebGL')
+        }
+      }
+      function getShader(gl, id) {
+        var shaderScript = document.getElementById(id)
+        if (!shaderScript) {
+          return null
+        }
+        var str = ''
+        var k = shaderScript.firstChild
+        while (k) {
+          if (k.nodeType == 3) {
+            str += k.textContent
+          }
+          k = k.nextSibling
+        }
+        var shader
+        if (shaderScript.type == 'x-shader/x-fragment') {
+          shader = gl.createShader(gl.FRAGMENT_SHADER)
+        } else if (shaderScript.type = 'x-shader/x-vertex') {
+          shader = gl.createShader(gl.VERTEX_SHADER)
+        } else {
+          return null
+        }
+        gl.shaderSource(shader, str)
+        gl.compileShader(shader)
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          alert(gl.getShaderInfoLog(shader))
+          return null
+        }
+        return shader
+      }
+      var shaderProgram
+      function initShaders() {
+        var fragmentShader = getShader(gl, 'shader-fs')
+        var vertexShader = getShader(gl, 'shader-vs')
+        shaderProgram = gl.createProgram()
+        gl.attachShader(shaderProgram, fragmentShader)
+        gl.attachShader(shaderProgram, vertexShader)
+        gl.linkProgram(shaderProgram)
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+          alert('Tidak bisa menginisialisasi shaders')
+        }
+        gl.useProgram(shaderProgram)
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aVertexPosition')
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute)
+        shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, 'aVertexColor')
+        gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute)
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix')
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix')
+      }
+      
+      var currentPressedKeys = {}
+      function handleKeyDown(event) {
+        currentPressedKeys[event.keyCode] = true
+      }
+
+      function handleKeyUp(event) {
+        currentPressedKeys[event.keyCode] = false
+      }
+
+      var factory
+      var scene1,scene2,scene3,scene4
+
+      function tick() {
+        requestAnimationFrame(tick)
+        
+        factory.update()
+
+        scene1.drawScene(0,400,500,500)
+        scene2.drawScene(500,400,500,500)
+        scene3.drawScene(0,0,500,500)
+        scene4.drawScene(500,0,500,500)
+      }
+
+      function webGLStart() {
+        var canvas = document.getElementById('mycanvas')
+        document.onkeydown = handleKeyDown
+        document.onkeyup = handleKeyUp
+        initGL(canvas)
+        initShaders()
+        factory = new ObjectFactory(gl)
+        factory.initBuffers()
+        
+        scene1 = new Scene(factory)
+        scene2 = new Scene(factory)
+        scene3 = new Scene(factory)
+        scene4 = new Scene(factory)
+
+        scene1.drawScene = function(sx,sy,w,h) {
+          this.setGlViewPort(sx,sy,w,h)
+          mat4.perspective(this.pMatrix, glMatrix.toRadian(10), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+          mat4.identity(this.mvMatrix)
+
+
+          let cMatrix = mat4.create()
+          mat4.rotateY(cMatrix, cMatrix, toRadians(45))
+          mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
+          mat4.translate(cMatrix, cMatrix, [4,1,30])
+    
+          mat4.invert(cMatrix,cMatrix)
+          mat4.multiply(this.pMatrix, this.pMatrix,  cMatrix)
+          
+          this.defaultDrawScene()
+        }
+        
+        scene2.drawScene = function(sx,sy,w,h) {
+          this.setGlViewPort(sx,sy,w,h)
+          mat4.perspective(this.pMatrix, glMatrix.toRadian(10), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+          mat4.identity(this.mvMatrix)
+
+
+          let cMatrix = mat4.create()
+          mat4.rotateY(cMatrix, cMatrix, toRadians(45))
+          mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
+          mat4.translate(cMatrix, cMatrix, [4,1,30])
+    
+          mat4.invert(cMatrix,cMatrix)
+          mat4.multiply(this.pMatrix, this.pMatrix,  cMatrix)
+          
+          this.defaultDrawScene()
+        }
+        
+        scene3.drawScene = function(sx,sy,w,h) {
+          this.setGlViewPort(sx,sy,w,h)
+          mat4.perspective(this.pMatrix, glMatrix.toRadian(10), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+          mat4.identity(this.mvMatrix)
+
+
+          let cMatrix = mat4.create()
+          mat4.rotateY(cMatrix, cMatrix, toRadians(45))
+          mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
+          mat4.translate(cMatrix, cMatrix, [4,1,30])
+    
+          mat4.invert(cMatrix,cMatrix)
+          mat4.multiply(this.pMatrix, this.pMatrix,  cMatrix)
+          
+          this.defaultDrawScene()
+        }
+        
+        scene4.drawScene = function(sx,sy,w,h) {
+          this.setGlViewPort(sx,sy,w,h)
+          mat4.perspective(this.pMatrix, glMatrix.toRadian(10), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+          mat4.identity(this.mvMatrix)
+
+
+          let cMatrix = mat4.create()
+          mat4.rotateY(cMatrix, cMatrix, toRadians(45))
+          mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
+          mat4.translate(cMatrix, cMatrix, [4,1,30])
+    
+          mat4.invert(cMatrix,cMatrix)
+          mat4.multiply(this.pMatrix, this.pMatrix,  cMatrix)
+          
+          this.defaultDrawScene()
+        }
+        
+
+        
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0)
+        gl.enable(gl.DEPTH_TEST)
+        tick()
+      }
+    </script>
+  </head>
+  <body onload="webGLStart();">
+    <div>
+      <canvas id="mycanvas" style="border: none" width="1000" height="900"></canvas>
+    </div>    
+  </body>
+</html>
