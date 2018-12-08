@@ -1,5 +1,7 @@
 function toRadians (angle) {
   return angle * (Math.PI / 180);
+  // mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
+  // mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
 }
 
 function do2dRotation(matrix,degree,xCenter,yCenter,xColumnIndex,yColumnIndex,x_speed,y_speed){
@@ -208,7 +210,7 @@ function ObjectFactory(GL,shaderManager){
   huruf.x =-0.375       
   huruf.y = -0.125
   huruf.z = -1.1
-
+  huruf.yRotation = 0
 
   huruf.updatePosition = function(){
     this.x+=this.x_speed
@@ -219,27 +221,27 @@ function ObjectFactory(GL,shaderManager){
   huruf.checkCollision = function(){
     var positions = this.positions
     for(var i=0;i<positions.length;i+=3){
-      if(positions[i] < -1.5 && this.x_speed < 0.0){
+      if(positions[i] <= -1.5 && this.x_speed < 0.0){
         this.isClockWiseRotation = !this.isClockWiseRotation
         return {collide:"left"}
       }
-      else if(positions[i] > 1.5 && this.x_speed > 0.0){
+      else if(positions[i] >= 1.5 && this.x_speed > 0.0){
         this.isClockWiseRotation = !this.isClockWiseRotation
         return {collide:"right"}
       }
-      else if(positions[i+1] < -1.5 && this.y_speed < 0.0){
+      else if(positions[i+1] <= -1.5 && this.y_speed < 0.0){
         this.isClockWiseRotation = !this.isClockWiseRotation
         return {collide:"bottom"}
       }
-      else if(positions[i+1] > 1.5 && this.y_speed > 0.0){
+      else if(positions[i+1] >= 1.5 && this.y_speed > 0.0){
         this.isClockWiseRotation = !this.isClockWiseRotation
         return {collide:"top"}
       }
-      else if(positions[i+2] < -1.5 && this.z_speed < 0.0){
+      else if(positions[i+2] <= -1.5 && this.z_speed < 0.0){
         this.isClockWiseRotation = !this.isClockWiseRotation
         return {collide:"back"}
       }
-      else if(positions[i+2] > 1.5 && this.z_speed > 0){
+      else if(positions[i+2] >= 1.5 && this.z_speed > 0){
         this.isClockWiseRotation = !this.isClockWiseRotation
         return {collide:"front"}
       }
@@ -373,6 +375,6 @@ function ObjectFactory(GL,shaderManager){
     do2dRotation(huruf.positions,toRadians(
       huruf.isClockWiseRotation?1:-1
     ),huruf.x,huruf.z,0,2,huruf.x_speed,huruf.y_speed)
-
+    huruf.yRotation+=huruf.isClockWiseRotation?1:-1
   }
 }

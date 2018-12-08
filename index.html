@@ -66,10 +66,10 @@
         requestAnimationFrame(tick)
         
         factory.update()
-        scene1.drawScene(0,600,500,500)
-        scene2.drawScene(500,600,500,500)
-        scene3.drawScene(0,300,500,500)
-        scene4.drawScene(500,300,500,500)
+        scene1.drawScene(0,650,350,350)
+        scene2.drawScene(500,650,350,350)
+        scene3.drawScene(0,300,350,350)
+        scene4.drawScene(500,300,350,350)
       }
 
       function webGLStart() {
@@ -111,14 +111,14 @@
 
         scene1.drawScene = function(sx,sy,w,h) {
           this.setGlViewPort(sx,sy,w,h)
-          mat4.perspective(this.pMatrix, glMatrix.toRadian(13), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+          mat4.perspective(this.pMatrix, glMatrix.toRadian(45), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
           mat4.identity(this.mvMatrix)
 
 
           let cMatrix = mat4.create()
           mat4.rotateY(cMatrix, cMatrix, toRadians(45))
           mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
-          mat4.translate(cMatrix, cMatrix, [0,0,30])
+          mat4.translate(cMatrix, cMatrix, [0,0,7])
     
           mat4.invert(cMatrix,cMatrix)
           mat4.multiply(this.pMatrix, this.pMatrix,  cMatrix)
@@ -172,14 +172,14 @@
 
         scene2.drawScene = function(sx,sy,w,h) {
           this.setGlViewPort(sx,sy,w,h)
-          mat4.perspective(this.pMatrix, glMatrix.toRadian(13), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+          mat4.perspective(this.pMatrix, glMatrix.toRadian(45), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
           mat4.identity(this.mvMatrix)
 
 
           let cMatrix = mat4.create()
           mat4.rotateY(cMatrix, cMatrix, toRadians(45+this.yDegree))
           mat4.rotateX(cMatrix, cMatrix, toRadians(-20+this.xDegree))
-          mat4.translate(cMatrix, cMatrix, [0,0,30])
+          mat4.translate(cMatrix, cMatrix, [0,0,7])
     
           mat4.invert(cMatrix,cMatrix)
           mat4.multiply(this.pMatrix, this.pMatrix,  cMatrix)
@@ -189,14 +189,15 @@
         
         scene3.drawScene = function(sx,sy,w,h) {
           this.setGlViewPort(sx,sy,w,h)
-          mat4.perspective(this.pMatrix, glMatrix.toRadian(13), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+          mat4.perspective(this.pMatrix, glMatrix.toRadian(45), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
           mat4.identity(this.mvMatrix)
 
 
           let cMatrix = mat4.create()
-          mat4.rotateY(cMatrix, cMatrix, toRadians(45))
-          mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
-          mat4.translate(cMatrix, cMatrix, [0,1,30])
+          var h = this.factory.huruf
+          // mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
+          mat4.translate(cMatrix, cMatrix, [h.x,h.y+0.7,h.z])
+          mat4.rotateY(cMatrix, cMatrix, toRadians(-h.yRotation-90))
     
           mat4.invert(cMatrix,cMatrix)
           mat4.multiply(this.pMatrix, this.pMatrix,  cMatrix)
@@ -207,14 +208,14 @@
         scene4.rDegree = 0
         scene4.drawScene = function(sx,sy,w,h) {
           this.setGlViewPort(sx,sy,w,h)
-          mat4.perspective(this.pMatrix, glMatrix.toRadian(13), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
+          mat4.perspective(this.pMatrix, glMatrix.toRadian(45), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
           mat4.identity(this.mvMatrix)
 
 
           let cMatrix = mat4.create()
           mat4.rotateY(cMatrix, cMatrix, toRadians(45+this.rDegree++))
           mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
-          mat4.translate(cMatrix, cMatrix, [0,1,30])
+          mat4.translate(cMatrix, cMatrix, [0,0,7])
     
           mat4.invert(cMatrix,cMatrix)
           mat4.multiply(this.pMatrix, this.pMatrix,  cMatrix)
