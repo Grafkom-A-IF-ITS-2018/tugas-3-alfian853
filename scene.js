@@ -45,7 +45,7 @@ function Scene(factory) {
     gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, factory.squareTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0)
 
     gl.activeTexture(gl.TEXTURE0)
-    gl.bindTexture(gl.TEXTURE_2D, factory.crateTextures[1])
+    gl.bindTexture(gl.TEXTURE_2D, factory.crateTextures[2])
     gl.uniform1i(shaderProgram.samplerUniform, 0)
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, factory.squareVertexIndexBuffer)
@@ -57,9 +57,7 @@ function Scene(factory) {
     let whiteTex = gl.createTexture();
     gl.disableVertexAttribArray(texcoordLoc);
     gl.bindTexture(gl.TEXTURE_2D, whiteTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-                  new Uint8Array([1, 1, 1, 1]));
-
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([1, 1, 1, 1]));
 
     gl.enableVertexAttribArray(colorLoc);
     

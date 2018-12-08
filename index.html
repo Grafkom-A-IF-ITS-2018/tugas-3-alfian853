@@ -66,7 +66,6 @@
         requestAnimationFrame(tick)
         
         factory.update()
-        console.log(window)
         scene1.drawScene(0,600,500,500)
         scene2.drawScene(500,600,500,500)
         scene3.drawScene(0,300,500,500)
@@ -127,6 +126,50 @@
           this.defaultDrawScene()
         }
         
+        // let onMouseDown = document.addEventListener("onmousedown")
+        
+        scene2.xDegree = 0
+        scene2.yDegree = 0
+        scene2.onMouseDown = false
+        scene2.mouseDownHandler = function(event){
+          scene2.onMouseDown = true
+          scene2.lastX = event.pageX
+          scene2.lastY = event.pageY
+          // if right click
+          if(event.which == 3){
+            scene2.xDegree = 0
+            scene2.yDegree = 0
+          }
+        }
+        scene2.mouseUpHandler = function(event){
+          scene2.onMouseDown = false
+          scene2.lastX = event.pageX
+          scene2.lastY = event.pageY
+        }
+        scene2.mouseMoveHandler = function(event){
+          // if dragging left mouse button
+          if(scene2.onMouseDown && event.which == 1){
+            if(scene2.xDegree<180){
+              scene2.yDegree+=(scene2.lastX-event.pageX)
+            }
+            else{
+              scene2.yDegree-=(scene2.lastX-event.pageX)
+            }
+            scene2.xDegree+=(scene2.lastY-event.pageY)
+            if(scene2.yDegree<0){scene2.yDegree+=360}
+            if(scene2.yDegree >= 360){scene2.yDegree-=360}
+            if(scene2.xDegree >= 360){scene2.xDegree-=360}
+            // console.log(scene2.lastX+" "+event.pageX+" = "+scene2.xDegree)
+            scene2.lastX = event.pageX
+            scene2.lastY = event.pageY
+          }
+        }
+
+        document.getElementById('mycanvas').addEventListener('mousedown',scene2.mouseDownHandler,false)
+        document.getElementById('mycanvas').addEventListener('mousemove',scene2.mouseMoveHandler,true)
+        document.getElementById('mycanvas').addEventListener('mouseup',scene2.mouseUpHandler,false)
+
+
         scene2.drawScene = function(sx,sy,w,h) {
           this.setGlViewPort(sx,sy,w,h)
           mat4.perspective(this.pMatrix, glMatrix.toRadian(13), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
@@ -134,8 +177,8 @@
 
 
           let cMatrix = mat4.create()
-          mat4.rotateY(cMatrix, cMatrix, toRadians(45))
-          mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
+          mat4.rotateY(cMatrix, cMatrix, toRadians(45+this.yDegree))
+          mat4.rotateX(cMatrix, cMatrix, toRadians(-20+this.xDegree))
           mat4.translate(cMatrix, cMatrix, [0,0,30])
     
           mat4.invert(cMatrix,cMatrix)
@@ -160,7 +203,8 @@
           
           this.defaultDrawScene()
         }
-        
+
+        scene4.rDegree = 0
         scene4.drawScene = function(sx,sy,w,h) {
           this.setGlViewPort(sx,sy,w,h)
           mat4.perspective(this.pMatrix, glMatrix.toRadian(13), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
@@ -168,7 +212,7 @@
 
 
           let cMatrix = mat4.create()
-          mat4.rotateY(cMatrix, cMatrix, toRadians(45))
+          mat4.rotateY(cMatrix, cMatrix, toRadians(45+this.rDegree++))
           mat4.rotateX(cMatrix, cMatrix, toRadians(-20))
           mat4.translate(cMatrix, cMatrix, [0,1,30])
     
