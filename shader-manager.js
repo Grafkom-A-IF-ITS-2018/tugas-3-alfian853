@@ -1,11 +1,9 @@
-function ShaderManager(){
+function Shader(gl,prefixId,attrIntializer){
 
-    this.shaders = {}
+    this.shaderProgram = undefined
 
-    this.getAndSwitchShader = function(prefixId){
-      let res = this.shaders[prefixId]
-      res.initializer.execute(gl,res.shaderProgram)
-      return res.shaderProgram
+    this.getShaderProgram = function(){
+      return this.shaderProgram
     }
 
     this._getShader = function(gl, id) {
@@ -38,27 +36,19 @@ function ShaderManager(){
       }
       return shader
     }
-    this.addAndInitShader = function(gl,prefixId,attrIntializer) {
-      var fragmentShader = this._getShader(gl, prefixId+'-fs')
-      var vertexShader = this._getShader(gl, prefixId+'-vs')
-      
-      shaderProgram = gl.createProgram()
-      gl.attachShader(shaderProgram, fragmentShader)
-      gl.attachShader(shaderProgram, vertexShader)
-      gl.linkProgram(shaderProgram)
-      
-      if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        alert('Tidak bisa menginisialisasi shaders')
-      }
-      gl.useProgram(shaderProgram)
-      
-      attrIntializer.execute(gl,shaderProgram)
-      this.shaders[prefixId] = {}
-      this.shaders[prefixId].shaderProgram = shaderProgram
-      this.shaders[prefixId].initializer = attrIntializer
+    var fragmentShader = this._getShader(gl, prefixId+'-fs')
+    var vertexShader = this._getShader(gl, prefixId+'-vs')
+    
+    this.shaderProgram = gl.createProgram()
+    let shaderProgram = this.shaderProgram
+    gl.attachShader(shaderProgram, fragmentShader)
+    gl.attachShader(shaderProgram, vertexShader)
 
+    gl.linkProgram(shaderProgram)
+
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+      alert('Tidak bisa menginisialisasi shaders')
     }
-
-
+    attrIntializer.execute(gl,shaderProgram)
 
 }
